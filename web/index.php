@@ -13,11 +13,11 @@ session_start();
       <h1>Mess with the bit, get the horns</h1>
       <div class="content">
          <div id="currentbid">
-            <span><?= $data->bid; ?></span>
+            <span></span>
          </div>
          <form id="vf" name="vote" method="post">
-            <input type="hidden" id="ct" name="ct" value="<?= $data->ct; ?>" />
-            <input type="hidden" id="cb" name="cb" value="<?= $data->cb; ?>" />
+            <input type="hidden" id="ct" name="ct" value="" />
+            <input type="hidden" id="cb" name="cb" value="" />
             <input type="hidden" id="cjst" name="cjst" value=""/>
             <input type="hidden" id="vfproj" name="prediction" />
             <div id="vote">
