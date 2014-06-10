@@ -1,32 +1,45 @@
 <?php
 
 include_once('constants.php');
+include_once('bithorn_bid.php');
 
-class Data {
+class Data
+{
 
-function get($type, $set) {
+   private $set;
 
-if (defined($set)) {
-$url = constant($set);
+   public function __construct($set)
+   {
+      $this->set = $set;
+   }
 
-// Initializing curl
-$ch = curl_init( $url );
+   public function get()
+   {
+      if (!empty($this->set))
+      {
+         $url = $this->set;
 
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_HTTPGET, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Accept: application/json'
-));
+         // Initializing curl
+         $ch = curl_init($url);
 
-// Getting results
-$result = curl_exec($ch); // Getting jSON result string
+         curl_setopt($ch, CURLOPT_URL, $url);
+         curl_setopt($ch, CURLOPT_HTTPGET, true);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+             'Content-Type: application/json',
+             'Accept: application/json'
+         ));
 
-//var_dump($result);
-return $result;
+         // Getting results
+         $result = curl_exec($ch); // Getting jSON result string
+
+         // since we are hardcoding from bitstamp for right now
+         // ignore other providers
+         $bid = Bithorn_Bid::fromBitstamp($result);
+         
+         return json_encode($bid->toArray());
+      }
+      return json_encode(array());
+   }
 }
-}
-}
-
 ?>

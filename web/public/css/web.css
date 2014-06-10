@@ -1,0 +1,32 @@
+h1 {
+   text-align:center;
+   font-size:72px;
+   font-weight:bold;
+}
+div.content {
+   text-align:center;
+}
+#currentbid
+{
+   display:block;
+   font-weight:bold;
+   font-size:64px;
+}
+div#vote
+{
+   display:inline-block;
+}
+span.vote
+{
+   width: 186px;
+   height: 180px;
+   display:inline-block;
+   float:left;
+}
+.upvote {
+   background: url("/bitcoin-price-guess/web/public/images/arrows.png") -96px 0;
+}
+.downvote {
+   background: url("/bitcoin-price-guess/web/public/images/arrows.png") -96px -180px;
+}
+

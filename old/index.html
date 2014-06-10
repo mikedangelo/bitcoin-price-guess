@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>bithorn</title>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+<style type="text/css">
+.loading
+{
+height:20px;
+width:20px;
+}
+</style>
+<script type="text/javascript">
+
+$(document).ready(function(){
+ 
+  function LoadTickerData()
+  {
+    // get ticker data defines these types
+    var set = "btce_btcusd_ticker";
+    var set = "coindesk_btcusd_ticker";
+    var set = "bitstamp_btcusd_ticker";
+    var localurl = "/bitcoin-price-guess/web/pulse.php?type=ticker&set="+set;
+
+    var a = $("#stuff").html();
+    $.getJSON(localurl,
+      function(data) {
+         price = data.bid;
+           $("#stuff").html(data.bid).hide().fadeIn(250);
+           document.title = data.bid + " - bitHorn";
+    })
+    .error(function(data) { $("#stuff").html(a);
+    });
+  }
+  LoadTickerData();
+  setInterval(LoadTickerData, 5000000);
+
+});
+  
+</script>
+
+</head>
+<body>
+<h1>Mess with the bit, get the horns</h1>
+<div id="stuff"></div>
+</body>
+</html>

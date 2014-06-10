@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Stuff</h1>
-	<div id="stuff"></div>
+        <div id="stuff"></div>
 <script>
   
   function LoadTickerData()
@@ -16,7 +16,7 @@
     var set = "btce_btcusd_ticker";
     var set = "coindesk_btcusd_ticker";
     var set = "bitstamp_btcusd_ticker";
-    var localurl = "http://localhost/getData.php?type=ticker&set="+set;
+    var localurl = "http://localhost/bitcoin-price-guess/web/getData.php?type=ticker&set="+set;
 
   $.getJSON(localurl,
         function(data){
