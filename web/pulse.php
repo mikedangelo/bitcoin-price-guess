@@ -32,8 +32,9 @@ function retrieveData($set,$type)
    $canRefresh = false;
    $pulseData = "";
 
-   if (!empty($_SESSION['pulse_data']) && strlen($_SESSION['pulse_data']) > 2)
+   if (!empty($_SESSION['pulse_data']))
    {
+      // pulse data is stored as a string!!!!!
       $pulseData = json_decode($_SESSION['pulse_data']);
       // why is pulseData timestamp in the future from now????
       // limiting to a 5 second difference currently results in
@@ -48,17 +49,75 @@ function retrieveData($set,$type)
       $canRefresh = true;
    }
 
+   // short circuit on can refresh if we already have given a score
+   if (!empty($pulseData) && isset($pulseData->score))
+   {
+      $canRefresh = true;
+   }
+
    // if we can refresh, and we have a data feed to refresh, let's do it!
+   // if we can refresh and have an oustanding cast vote, let's see if we
+   // can get a score!
    if (!empty($set) && $canRefresh)
    {
+      $score = false;
+      $prediction = "";
+      $oldbid = "";
+      if (!empty($_SESSION['cast']) && !empty($pulseData))
+      {
+         $cast = $_SESSION['cast'];
+         // we can only vote for the next pulse, within 500 seconds?
+         if (abs($pulseData->timestamp - $cast['timestamp']) < 500)
+         {
+            // we can vote!
+            $score = true;
+            $prediction = $cast['prediction'];
+            $oldbid = $pulseData->bid;
+         }
+      }
+
       // data object needs to be internal data model
       // since each API has different data models...
       // for now, we are forcing bitstamp
       $set = BITSTAMP_BTCUSD_TICKER;
       $newbid = new Data($set);
+
+      // data is stored as a string!!
       $data = $newbid->get();
-      $_SESSION['pulse_data'] = $data;
-      return $data;
+      $newdata = json_decode($data);
+      // newdata is now a standard object from the string
+
+      // now that we have a new bid, if we can score lets do it
+      if ($score && $oldbid != $newdata->bid)
+      {
+         $victory = false;
+         if ($prediction == "upvote")
+         {
+            if ($newdata->bid > $oldbid)
+            {
+               $victory = true;
+            }
+         }
+         else if ($prediction == "downvote")
+         {
+            if ($newdata->bid < $oldbid)
+            {
+               $victory = true;
+            }
+         }
+
+         // we have a score, and it's either a winner or not!
+         $newdata->score = $victory;
+      }
+
+      // every pulse we need to clear out the cast vote
+      // if the bid has changed
+      if ($pulseData->bid != $newdata->bid)
+      {
+         unset($_SESSION['cast']);
+      }
+
+      $_SESSION['pulse_data'] = json_encode($newdata);
    }
 
    return $_SESSION['pulse_data'];

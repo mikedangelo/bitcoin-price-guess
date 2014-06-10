@@ -30,12 +30,22 @@ $(document).ready(function(){
     var a = $("#currentbid").html();
     $.getJSON(localurl,
       function(data) {
+         console.log(data);
          price = data.bid;
          $("#currentbid").html(data.bid).hide().fadeIn(350);
          document.title = data.bid + " - bitHorn";
          $("#ct").val(data.ct);
          $("#cb").val(data.cb);
          $('div#vote a').attr('href','vote.php');
+         if (data.score == true)
+         {
+            alert("You win!");
+         }
+         if (data.score == false)
+         {
+            alert("Sorry, try again.");
+         }
+
     })
     .error(function(data) { $("#currentbid").html(a);
     });

@@ -50,8 +50,6 @@ if (!empty($_POST) && !empty($_POST['prediction']))
    }
 }
 
-
-
 $user = hash('sha256',$_SERVER['REMOTE_ADDR']);
 
 
@@ -70,7 +68,18 @@ if (!empty($timestamp) && !empty($currentbid) && $prediction != "no-op" && !empt
 }
 else
 {
-   echo json_encode(array('status' => 'error'));
+   if (!empty($_SESSION['cast']))
+   {
+      echo json_encode(array('status' => 'nobid', 'message' => 'You already have placed a prediction of '. $_SESSION['cast']['prediction'] .'!'));
+   }
+   else if (empty($currentbid))
+   {
+      echo json_encode(array('status' => 'nobid', 'message' => 'The bids are currently the same'));
+   }
+   else
+   {
+      echo json_encode(array('status' => 'error'));
+   }
 }
 exit;
 
