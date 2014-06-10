@@ -39,11 +39,14 @@ $(document).ready(function(){
          $('div#vote a').attr('href','vote.php');
          if (data.score == true)
          {
+            var a = parseInt($("#highscore span").html());
+            $("#highscore span").html(a+1);
             alert("You win!");
          }
          if (data.score == false)
          {
             alert("Sorry, try again.");
+            $("#highscore span").html("0");
          }
 
     })

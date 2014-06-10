@@ -7,11 +7,14 @@ session_start();
       <title>bithorn</title>
       <link rel="stylesheet" type="text/css" href="/bitcoin-price-guess/web/public/css/web.css" />
       <script src="http://code.jquery.com/jquery-latest.js"></script>
-      <script src="/bitcoin-price-guess/web/public/js/web.js"></script>
+      <script src="/justin/web/public/js/web.js"></script>
    </head>
    <body>
       <h1>Mess with the bit, get the horns</h1>
       <div class="content">
+         <div id="highscore">
+            <p>Current Streak: <span>0</span></p>
+         </div>
          <div id="currentbid">
             <span></span>
          </div>
