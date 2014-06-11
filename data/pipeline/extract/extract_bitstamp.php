@@ -13,7 +13,7 @@ class Extract_Bitstamp {
       curl_setopt($ch, CURLOPT_URL, BITSTAMP_BTCUSD_TICKER);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       $output = curl_exec($ch);
-      curl_close($ch);     
+      curl_close($ch);
 
       return $output;
    }

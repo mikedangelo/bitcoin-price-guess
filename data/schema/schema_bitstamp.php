@@ -2,9 +2,6 @@
 
 /**
  * Schema for bitstamp raw data
- * 
- * Note that we can refactor the basic deserializer (constructor) 
- * and serializer (not written) into an abstract base for json feeds.
  */
 class Schema_Bitstamp {
 
