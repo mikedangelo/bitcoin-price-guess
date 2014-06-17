@@ -14,6 +14,11 @@ var_dump($pfs->retrieve_extractions($ret["lastid"]));
  */
 class PFS {
 
+   // enum for stages
+   const EXTRACTED = 0;
+   const PROCESSED = 1;
+   const JOINED = 2;
+
    public function __construct() {
       $username = "root";
       $password = "p24reb";
@@ -24,43 +29,16 @@ class PFS {
       mysql_close();
    }
 
-   // Inserts rawdata for a given feed (STAGE 1 OUTPUT)
-   public function insert_extraction($feedid, $data) {
-      $this->insert("extractions", $feedid, $data);
-   }
-
-   // Retrieves rawdata and and feedid from the last seen id (STAGE 2 INPUT)
-   public function retrieve_extractions($lastid) {
-      return $this->retrieve("extractions", $lastid);
-   }
-
-   // inserts tranformed data (STAGE 2 OUTPUT)
-   public function insert_transform($feedid, $data) {
-      $this->insert("transforms", $feedid, $data);
-   }
-
-   // retrieves transformed data (STAGE 3 INPUT)
-   public function retrieve_transforms($lastid) {
-      return $this->retrieve("transforms", $lastid);
-   }
-
-   // SPECIAL NOTE: approaching this a bit incorrectly.
-   // the transform stages need to be thought out FAR better.
-   // Inserts 
-   public function insert_load($data) {
-      $this->insert("loads", "0", $data);
-   }
-
-   public function insert($table, $feedid, $data) {
-      $query = "INSERT INTO bithorn.$table (feedid, data) VALUES ('$feedid', '$data')";
+   public function insert($stage, $data, $feedid = -1) {
+      $query = "INSERT INTO bithorn.$stage (feedid, data) VALUES ('$feedid', '$data')";
       $result = mysql_query($query);
       if (!$result) {
          throw new Exception("DB INSERTION ERROR");
       }
    }
 
-   public function retrieve($table, $lastid) {
-      $query = "SELECT id, feedid, data FROM bithorn.$table WHERE id>'$lastid'";
+   public function retrieve($stage, $lastid = -1) {
+      $query = "SELECT id, feedid, data FROM bithorn.$stage WHERE id>'$lastid'";
       $result = mysql_query($query);
 
       $ret["lastid"] = $lastid;
@@ -80,6 +58,65 @@ class PFS {
       
       return $ret;
    } 
+
+   public function insert_lastid($stage, $lastid) {
+      $query = "INSERT INTO bithorn.lastid (stage, lastid) VALUES ('$stage', '$lastid') ON DUPLICATE KEY UPDATE lastid='$lastid'";
+      $result = mysql_query($query);
+      if (!$result) {
+         throw new Exception("DB INSERTION ERROR");
+      } 
+   }
+
+   public function retrieve_lastid($stage = -1) {
+      $query = "SELECT lastid WHERE stage='$stage'"; 
+      $result = mysql_query($query);
+   
+      if ($result && mysql_num_rows($result)) {
+         $row = mysql_fetch_assoc($result);
+         if (!empty($row)) {
+            return $row["lastid"];
+         }
+      }
+      
+      return -1;
+   }
+
+
+   // This is an instantaneous indicator of the price.
+   // no access to volume via current feeds. not completely necessary tho.
+   // In the future we could figure out a 24 hour high and 24 hour low.
+   public function insert_price($data) {
+      $query = "INSERT INTO bithorn.price (feedid, data) VALUES ('0', '$data')";
+      $result = mysql_query($query);
+      if (!$result) {
+         throw new Exception("DB INSERTION ERROR");
+      }
+   }
+
+   public function retrieve_price() {
+
+// Keep working here
+      $query = "SELECT data FROM bithorn.price ORDER BY id DESC";
+      $result = mysql_query($query);
+
+      $ret["lastid"] = $lastid;
+      $ret["records"] = array();
+      
+      if ($result && mysql_num_rows($result)) {
+         while ($row = mysql_fetch_assoc($result)) {
+            if ($row["id"] > $ret["lastid"]) {
+               $ret["lastid"] = $row["id"];
+            }
+            if (empty($ret["records"][$row["feedid"]])) {
+               $ret["records"][$row["feedid"]] = array();
+            }
+            $ret["records"][$row["feedid"]][$row["id"]] = $row["data"];
+         }
+      }
+      
+      return $ret;
+
+   }
 
 } 
 
