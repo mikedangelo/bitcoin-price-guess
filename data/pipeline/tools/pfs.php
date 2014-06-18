@@ -11,7 +11,6 @@ var_dump($ret);
 
 /**
  * This class serves as the file system for the pipeline
- * This iclass is NOT threadsafe and must be a singleton.
  */
 class PFS {
 
@@ -39,6 +38,7 @@ class PFS {
    }
 
    public function retrieve_records($stage, $lastid = -1) {
+      mysql_query("SET autocommit=0; LOCK TABLES bithorn.$stage READ, bithorn.lastid WRITE;");
       if ($lastid == -1) {
          $lastid = $this->retrieve_lastid($stage);
       }
@@ -60,6 +60,8 @@ class PFS {
       }
 
       $this->insert_lastid($stage, $lastid);
+
+      mysql_query("COMMIT; UNLOCK TABLES;");
       
       return $ret;
    } 
