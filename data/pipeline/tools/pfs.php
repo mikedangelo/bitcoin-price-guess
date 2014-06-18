@@ -1,23 +1,24 @@
 <?php
 
 $pfs = new PFS();
-$pfs->insert_extraction(0, "adsfkjlsdjf");
-$ret = $pfs->retrieve_extractions(0, 0);
+
+
+$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+$ret = $pfs->retrieve_records(PFS::EXTRACTED);
 var_dump($ret);
-$pfs->insert_extraction(0, "new");
-$pfs->insert_extraction(1, "new");
-$pfs->insert_extraction(99, "new");
-var_dump($pfs->retrieve_extractions($ret["lastid"]));
 
 /**
  * This class serves as the file system for the pipeline
+ * This iclass is NOT threadsafe and must be a singleton.
  */
 class PFS {
 
    // enum for stages
-   const EXTRACTED = 0;
-   const PROCESSED = 1;
-   const JOINED = 2;
+   const EXTRACTED = "extracted";
+   const PROCESSED = "processed";
+   const JOINED = "joined";
 
    public function __construct() {
       $username = "root";
@@ -29,25 +30,27 @@ class PFS {
       mysql_close();
    }
 
-   public function insert($stage, $data, $feedid = -1) {
-      $query = "INSERT INTO bithorn.$stage (feedid, data) VALUES ('$feedid', '$data')";
+   public function insert_record($stage, $record, $feedid = -1) {
+      $query = "INSERT INTO bithorn.$stage (feedid, data) VALUES ('$feedid', '$record')";
       $result = mysql_query($query);
       if (!$result) {
          throw new Exception("DB INSERTION ERROR");
       }
    }
 
-   public function retrieve($stage, $lastid = -1) {
+   public function retrieve_records($stage, $lastid = -1) {
+      if ($lastid == -1) {
+         $lastid = $this->retrieve_lastid($stage);
+      }
       $query = "SELECT id, feedid, data FROM bithorn.$stage WHERE id>'$lastid'";
       $result = mysql_query($query);
 
-      $ret["lastid"] = $lastid;
       $ret["records"] = array();
       
       if ($result && mysql_num_rows($result)) {
          while ($row = mysql_fetch_assoc($result)) {
-            if ($row["id"] > $ret["lastid"]) {
-               $ret["lastid"] = $row["id"];
+            if ($row["id"] > $lastid) {
+               $lastid = $row["id"];
             }
             if (empty($ret["records"][$row["feedid"]])) {
                $ret["records"][$row["feedid"]] = array();
@@ -55,67 +58,31 @@ class PFS {
             $ret["records"][$row["feedid"]][$row["id"]] = $row["data"];
          }
       }
+
+      $this->insert_lastid($stage, $lastid);
       
       return $ret;
    } 
 
-   public function insert_lastid($stage, $lastid) {
-      $query = "INSERT INTO bithorn.lastid (stage, lastid) VALUES ('$stage', '$lastid') ON DUPLICATE KEY UPDATE lastid='$lastid'";
+   private function insert_lastid($stage, $lastid) {
+      $query = "INSERT INTO bithorn.lastid (stage, id) VALUES ('$stage', '$lastid') ON DUPLICATE KEY UPDATE id='$lastid'";
       $result = mysql_query($query);
       if (!$result) {
          throw new Exception("DB INSERTION ERROR");
       } 
    }
 
-   public function retrieve_lastid($stage = -1) {
-      $query = "SELECT lastid WHERE stage='$stage'"; 
+   private function retrieve_lastid($stage = -1) {
+      $query = "SELECT id FROM bithorn.lastid WHERE stage='$stage'"; 
       $result = mysql_query($query);
    
       if ($result && mysql_num_rows($result)) {
          $row = mysql_fetch_assoc($result);
          if (!empty($row)) {
-            return $row["lastid"];
+            return $row["id"];
          }
       }
-      
       return -1;
-   }
-
-
-   // This is an instantaneous indicator of the price.
-   // no access to volume via current feeds. not completely necessary tho.
-   // In the future we could figure out a 24 hour high and 24 hour low.
-   public function insert_price($data) {
-      $query = "INSERT INTO bithorn.price (feedid, data) VALUES ('0', '$data')";
-      $result = mysql_query($query);
-      if (!$result) {
-         throw new Exception("DB INSERTION ERROR");
-      }
-   }
-
-   public function retrieve_price() {
-
-// Keep working here
-      $query = "SELECT data FROM bithorn.price ORDER BY id DESC";
-      $result = mysql_query($query);
-
-      $ret["lastid"] = $lastid;
-      $ret["records"] = array();
-      
-      if ($result && mysql_num_rows($result)) {
-         while ($row = mysql_fetch_assoc($result)) {
-            if ($row["id"] > $ret["lastid"]) {
-               $ret["lastid"] = $row["id"];
-            }
-            if (empty($ret["records"][$row["feedid"]])) {
-               $ret["records"][$row["feedid"]] = array();
-            }
-            $ret["records"][$row["feedid"]][$row["id"]] = $row["data"];
-         }
-      }
-      
-      return $ret;
-
    }
 
 } 
