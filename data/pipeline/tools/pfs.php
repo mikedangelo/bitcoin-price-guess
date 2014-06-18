@@ -1,13 +1,13 @@
 <?php
 
-$pfs = new PFS();
+//$pfs = new PFS();
 
 
-$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
-$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
-$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
-$ret = $pfs->retrieve_records(PFS::EXTRACTED);
-var_dump($ret);
+//$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+//$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+//$pfs->insert_record(PFS::EXTRACTED, "adsfkjlsdjf");
+//$ret = $pfs->retrieve_records(PFS::EXTRACTED);
+//var_dump($ret);
 
 /**
  * This class serves as the file system for the pipeline
