@@ -24,9 +24,9 @@ span.vote
    float:left;
 }
 .upvote {
-   background: url("/bitcoin-price-guess/web/public/images/arrows.png") -96px 0;
+   background: url("/public/images/arrows.png") -96px 0;
 }
 .downvote {
-   background: url("/bitcoin-price-guess/web/public/images/arrows.png") -96px -180px;
+   background: url("/public/images/arrows.png") -96px -180px;
 }
 

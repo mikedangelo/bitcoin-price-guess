@@ -5,9 +5,9 @@ session_start();
 <html>
    <head>
       <title>bithorn</title>
-      <link rel="stylesheet" type="text/css" href="/bitcoin-price-guess/web/public/css/web.css" />
+      <link rel="stylesheet" type="text/css" href="/public/css/web.css" />
       <script src="http://code.jquery.com/jquery-latest.js"></script>
-      <script src="/justin/web/public/js/web.js"></script>
+      <script src="/public/js/web.js"></script>
    </head>
    <body>
       <h1>Mess with the bit, get the horns</h1>

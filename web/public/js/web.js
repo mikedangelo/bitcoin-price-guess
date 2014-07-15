@@ -25,7 +25,7 @@ $(document).ready(function(){
     var set = "btce_btcusd_ticker";
     var set = "coindesk_btcusd_ticker";
     var set = "bitstamp_btcusd_ticker";
-    var localurl = "/bitcoin-price-guess/web/pulse.php?type=ticker&set="+set;
+    var localurl = "/pulse.php?type=ticker&set="+set;
 
     var a = $("#currentbid").html();
     $.getJSON(localurl,
