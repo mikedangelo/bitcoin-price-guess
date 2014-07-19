@@ -1,4 +1,3 @@
-data/etl/README.md
-data/etl/TASKS.md
-data/etl/bitstamp.lock
-data/etl/nohup.out
+data/README.md
+data/TASKS.md
+data/bitstamp.lock

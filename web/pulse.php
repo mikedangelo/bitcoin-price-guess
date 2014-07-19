@@ -5,7 +5,6 @@ header("Content-Type: application/json");
 
 include_once('constants.php');
 include_once('data.php');
-include_once('../data/etl/price.php');
 
 if (empty($_GET))
 {
