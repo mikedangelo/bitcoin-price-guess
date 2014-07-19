@@ -9,8 +9,11 @@ class Price_Math {
       $feeds = new Feeds();
    }
 
-   public function calculate_price($conglomerate) {
+   public function digest($conglomerate) {
       $price = 0.0;
+      $timestamp = 0;
+      $digest = array();
+
       if ($conglomerate != null) {
          $entries = count($conglomerate);
          foreach ($conglomerate as $entry) {
@@ -20,12 +23,20 @@ class Price_Math {
             // generally lower or higher than others), and adding exponential decay based
             // on the time delta
             $price += $entry->price;
+            // we don't need to do anythign special with the timestamp weights. We are limiting
+            // to a certain range of timestamps on the sql query.  
+            $timestamp += strtotime($entry->inserttime);
          }
          if ($entries != 0) {
-            $price = $price/$entries;
+            $price = round($price/$entries, 3);
+            $timestamp = round($timestamp/$entries);         
+            $timestamp = date( 'Y-m-d H:i:s', $timestamp );
          }
       }
-      return $price;
+      $digest["price"] = $price;
+      $digest["timestamp"] = $timestamp;
+
+      return $digest;
    }
 }
 

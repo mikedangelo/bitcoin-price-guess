@@ -19,7 +19,11 @@ class Price {
 
    public function getPrice($feedids = array()) {
       $conglomerate = $this->getConglomerate($feedids);
-      $price = $this->math->calculate_price($conglomerate);
+      // Form price digest from conglomerate. 
+      // This may eventually be saved back to the DB as part of processing
+      $digest = $this->math->digest($conglomerate);
+      // format
+      $price = array("bid"=>$digest["price"], "timestamp"=>$digest["timestamp"]);
       return $price;
    }
 
