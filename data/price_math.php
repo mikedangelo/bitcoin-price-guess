@@ -23,14 +23,12 @@ class Price_Math {
             // generally lower or higher than others), and adding exponential decay based
             // on the time delta
             $price += $entry->price;
-            // we don't need to do anythign special with the timestamp weights. We are limiting
-            // to a certain range of timestamps on the sql query.  
-            $timestamp += strtotime($entry->inserttime);
+            if ($entry->inserttime > $timestamp) {
+               $timestamp = $entry->inserttime;
+            }
          }
          if ($entries != 0) {
             $price = round($price/$entries, 3);
-            $timestamp = round($timestamp/$entries);         
-            $timestamp = date( 'Y-m-d H:i:s', $timestamp );
          }
       }
       $digest["price"] = $price;
