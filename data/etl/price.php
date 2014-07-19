@@ -1,24 +1,27 @@
 <?php
 include_once('../schema/conglomerate_entry.php');
+include_once('price_math.php');
 
-class Persistence {
+
+class Price {
+
+   private $math = null;
 
    public function __construct() {
       $username = "root";
       $password = "p24reb";
       mysql_connect("localhost",$username,$password);
+      $this->math = new Price_Math();
    }
 
    public function __destruct() {
       mysql_close();
    }
 
-   public function setPrice($price) {
-      $query = "INSERT INTO bithorn.price SET price = '$price';";
-      $result = mysql_query($query);
-      if (!$result) {
-         throw new Exception("DB INSERTION ERROR");
-      }
+   public function getPrice($feedids = array()) {
+      $conglomerate = $this->getConglomerate($feedids);
+      $price = $this->math->calculate_price($conglomerate);
+      return $price;
    }
 
    public function addConglomerate($feedid, $price) {
@@ -29,9 +32,16 @@ class Persistence {
       }
    }
 
-   public function getConglomerate() {
+   public function getConglomerate($feedids = array()) {
       $conglomerate = array();
-      $query = "SELECT * FROM (select * from bithorn.price_conglomerate ORDER BY id DESC LIMIT 20) pc GROUP BY feedid";
+      $feedInStatement = "";
+      if (!empty($feedids)) {
+         foreach ($feedids as $feedid) {
+            $feedInStatement .= "'".$feedid."',";
+         }
+         $feedInStatement = "WHERE feedid IN (".trim($feedInStatement,",").") ";
+      }
+      $query = "SELECT * FROM (SELECT * FROM bithorn.price_conglomerate ".$feedInStatement."ORDER BY id DESC LIMIT 200) pc GROUP BY feedid";
       $result = mysql_query($query);
       if ($result) {
          if (mysql_num_rows($result)) {
@@ -52,4 +62,11 @@ class Persistence {
       return $conglomerate;
    }
 } 
-
+/*$p = new Price();
+$price = $p->getPrice(array(0,1));
+var_dump($price);
+$price = $p->getPrice(array(0));
+var_dump($price);
+$price = $p->getPrice();
+var_dump($price);
+*/

@@ -1,15 +1,21 @@
 <?php
 
+// TODO: make the init stuff a configuraiton file that gets used by the bash script and by php
+
+Feeds::init();
+
 class Feeds {
 
    // all of our feeds listed here
-   const BITSTAMP = 0;
+   const BITSTAMP_BTCUSD_TICKER = 0;
 
-   // details about each feed can be found here
-   public $details = array();
+   // data about each feed can be found here
+   public static $data = array();
 
-   public function __construct() {
-      $details[self::BITSTAMP]["name"] = "Bitstamp";
-      $details[self::BITSTAMP]["volume_weight"] = 1.0;
+   public static function init() {
+      self::$data[self::BITSTAMP_BTCUSD_TICKER]["name"] = "Bitstamp BTCUSD Ticker";
+      self::$data[self::BITSTAMP_BTCUSD_TICKER]["delay"] = "2";
+      self::$data[self::BITSTAMP_BTCUSD_TICKER]["url"] = "https://www.bitstamp.net/api/ticker/";
+      self::$data[self::BITSTAMP_BTCUSD_TICKER]["volume_weight"] = 1.0;
    }
 }

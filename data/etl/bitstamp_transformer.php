@@ -1,10 +1,6 @@
 <?php
 include_once("../schema/schema_bitstamp.php");
 
-//$tb = new Transform_Bitstamp();
-//$schema = $tb->transform('{"high": "345.2"}');
-//var_dump($schema);
-
 class Bitstamp_Transformer {
 
    public function transform($json = false) {
@@ -34,3 +30,8 @@ class Bitstamp_Transformer {
 
    }
 }
+
+//$tb = new Transform_Bitstamp();
+//$schema = $tb->transform('{"high": "345.2"}');
+//var_dump($schema);
+

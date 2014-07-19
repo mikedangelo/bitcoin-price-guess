@@ -1,36 +1,14 @@
 <?php
+include_once("feeds.php");
+include_once("feed_extractor.php");
 
-include_once("../../web/constants.php");
+class Bitstamp_Extractor extends Feed_Extractor {
 
-//$eb = new Extract_Bitstamp();
+   protected $feedid = Feeds::BITSTAMP_BTCUSD_TICKER;
+
+}
+
+//$eb = new Bitstamp_Extractor();
 //$eb->extract();
 //var_dump($eb->extract());
 
-class Bitstamp_Extractor {
-
-   protected $feedid = 1;
-   protected $sleepyTime = 10;
-
-   public function getFeedId() {
-      return $this->feedid;
-   }
-   
-   // Should be in super class
-   private function sleep() {
-      sleep($this->sleepyTime);
-   }
-
-   public function extract() {
-      $this->sleep();
-
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, BITSTAMP_BTCUSD_TICKER);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      $output = curl_exec($ch);
-      curl_close($ch);
-
-      return $output;
-   }
-}
-
-?>
