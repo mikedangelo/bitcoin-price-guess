@@ -22,9 +22,7 @@ class Price {
       // Form price digest from conglomerate. 
       // This may eventually be saved back to the DB as part of processing
       $digest = $this->math->digest($conglomerate);
-      // format
-      $price = array("bid"=>$digest["price"], "timestamp"=>$digest["timestamp"]);
-      return $price;
+      return $digest;
    }
 
    public function addConglomerate($feedid, $price) {

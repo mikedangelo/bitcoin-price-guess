@@ -31,9 +31,9 @@ $(document).ready(function(){
     $.getJSON(localurl,
       function(data) {
          console.log(data);
-         price = data.bid;
-         $("#currentbid").html(data.bid).hide().fadeIn(350);
-         document.title = data.bid + " - bitHorn";
+         price = data.price;
+         $("#currentbid").html(data.price).hide().fadeIn(350);
+         document.title = data.price + " - bitHorn";
          $("#ct").val(data.ct);
          $("#cb").val(data.cb);
          $('div#vote a').attr('href','vote.php');

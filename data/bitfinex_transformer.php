@@ -1,10 +1,10 @@
 <?php
-include_once("schema_bitstamp.php");
+include_once("schema_bitfinex.php");
 
-class Bitstamp_Transformer {
+class Bitfinex_Transformer {
 
    public function transform($json = false) {
-      $obj = new Schema_Bitstamp();
+      $obj = new Schema_Bitfinex();
       if ($json) {
          $this->set($obj, json_decode($json, true));
       }
@@ -31,7 +31,7 @@ class Bitstamp_Transformer {
    }
 }
 
-//$tb = new Transform_Bitstamp();
+//$tb = new Transform_Bitfinex();
 //$schema = $tb->transform('{"high": "345.2"}');
 //var_dump($schema);
 

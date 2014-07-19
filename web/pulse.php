@@ -73,7 +73,7 @@ function retrieveData($set,$type)
             // we can vote!
             $score = true;
             $prediction = $cast['prediction'];
-            $oldbid = $pulseData->bid;
+            $oldbid = $pulseData->price;
          }
       }
 
@@ -95,19 +95,19 @@ function retrieveData($set,$type)
       $newdata = json_decode($data);
 
       // now that we have a new bid, if we can score lets do it
-      if ($score && $oldbid != $newdata->bid)
+      if ($score && $oldbid != $newdata->price)
       {
          $victory = false;
          if ($prediction == "upvote")
          {
-            if ($newdata->bid > $oldbid)
+            if ($newdata->price > $oldbid)
             {
                $victory = true;
             }
          }
          else if ($prediction == "downvote")
          {
-            if ($newdata->bid < $oldbid)
+            if ($newdata->price < $oldbid)
             {
                $victory = true;
             }
@@ -119,7 +119,7 @@ function retrieveData($set,$type)
 
       // every pulse we need to clear out the cast vote
       // if the bid has changed
-      if ($pulseData->bid != $newdata->bid)
+      if ($pulseData->price != $newdata->price)
       {
          unset($_SESSION['cast']);
       }

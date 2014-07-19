@@ -1,9 +1,10 @@
 <?php
 
-// this is the bithorn model of a bid
+// UNUSED FOR NOW BUT WE MAY COME BACK TO THIS
+// this is the bithorn model of a price
 // this should be normalized from all of the
 // different providers
-class Bithorn_Bid
+class Bithorn_Price
 {
 
    private $high;
@@ -32,7 +33,7 @@ class Bithorn_Bid
       $obj->timestamp = $result->timestamp;
       $obj->bid = $result->bid;
       $obj->ask = $result->ask;
-      $obj->cb = base64_encode($result->bid);
+      $obj->cb = base64_encode($result->last);
       $obj->ct = base64_encode(strtotime("now"));
       return $obj;
 
