@@ -35,9 +35,7 @@ class Data
 
          // since we are hardcoding from bitstamp for right now
          // ignore other providers
-         $bid = Bithorn_Bid::fromBitstamp($result);
-         
-         return json_encode($bid->toArray());
+         return $result;
       }
       return json_encode(array());
    }

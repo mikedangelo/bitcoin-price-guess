@@ -1,7 +1,6 @@
 <?php
-include_once('../schema/conglomerate_entry.php');
+include_once('conglomerate_entry.php');
 include_once('price_math.php');
-
 
 class Price {
 

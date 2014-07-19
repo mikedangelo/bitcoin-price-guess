@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 
 include_once('constants.php');
 include_once('data.php');
+include_once('../data/etl/price.php');
 
 if (empty($_GET))
 {
@@ -23,7 +24,6 @@ if (!empty($_GET['set']) && defined(strtoupper($_GET['set'])))
 {
    $set = constant(strtoupper($_GET['set']));
 }
-
 echo retrieveData($set,$type);
 
 function retrieveData($set,$type)
@@ -55,11 +55,13 @@ function retrieveData($set,$type)
       $canRefresh = true;
    }
 
+
    // if we can refresh, and we have a data feed to refresh, let's do it!
    // if we can refresh and have an oustanding cast vote, let's see if we
    // can get a score!
-   if (!empty($set) && $canRefresh)
+   if ($canRefresh) //!empty($set) && $canRefresh), // USE HORNPRICE now
    {
+
       $score = false;
       $prediction = "";
       $oldbid = "";
@@ -76,6 +78,7 @@ function retrieveData($set,$type)
          }
       }
 
+      /*
       // data object needs to be internal data model
       // since each API has different data models...
       // for now, we are forcing bitstamp
@@ -86,6 +89,11 @@ function retrieveData($set,$type)
       $data = $newbid->get();
       $newdata = json_decode($data);
       // newdata is now a standard object from the string
+      */
+      $set = HORNPRICE;
+      $newbid = new Data($set);
+      $data = $newbid->get();
+      $newdata = json_decode($data);
 
       // now that we have a new bid, if we can score lets do it
       if ($score && $oldbid != $newdata->bid)

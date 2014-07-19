@@ -31,7 +31,7 @@ class Price_Math {
 
 /*
 $p = new Price_Math();
-include('../schema/conglomerate_entry.php');
+include('conglomerate_entry.php');
 $entry = new Conglomerate_Entry();
 $entry->price = "134.234";
 $entry2 = new Conglomerate_Entry();
