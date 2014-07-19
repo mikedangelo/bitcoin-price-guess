@@ -26,5 +26,6 @@ fi
    
 # run each of our feeds!
 ./run_feed.sh $bitstamp_time $bitstamp_name "php run_bitstamp.php" & 
+sleep 0.3
 ./run_feed.sh $bitfinex_time $bitfinex_name "php run_bitfinex.php" & 
 
