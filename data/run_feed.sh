@@ -25,10 +25,15 @@ trap finish EXIT
 
 # don't run if there is another already running
 if [ -a "$feedname.lock" ]; then
-   # this stops the finish call from executing on this exit
-   trap - EXIT
-   echo "$feedname.lock file exists, please cleanup previous process"
-   exit
+   if [ $(ps -hf $(cat $feedname.lock) |wc -l) -eq 0 ]; then
+      finish
+      echo pid not found... cleaning up crap lock file
+   else
+      # this stops the finish call from executing on this exit
+      echo already running...
+      trap - EXIT
+      exit
+   fi
 fi
 
 create
